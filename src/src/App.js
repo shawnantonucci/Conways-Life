@@ -9,6 +9,7 @@ let running = false;
 function App() {
   // ============== Hooks ============== //
   const [grid, setGrid] = useState([]);
+  const [gridSize, setGridSize] = useState(15);
   const [changeState, setChangeState] = useState(false);
   const [generation, setGeneration] = useState(-1);
   const [interval, setInterval] = useState(null);
@@ -26,6 +27,11 @@ function App() {
     setGrid(arr);
   }, []);
 
+  useEffect(() => {
+    let arr = emptyGrid();
+    setGrid(arr);
+  }, [gridSize]);
+
   // ============== Click handler to change individual cells ============== //
   const changeCell = e => {
     e.preventDefault();
@@ -42,15 +48,21 @@ function App() {
   const emptyGrid = (rows, col) => {
     let testArr = [];
     // Rows
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < gridSize; i++) {
       testArr[i] = [];
       // Columns
-      for (let j = 0; j < 15; j++) {
+      for (let j = 0; j < gridSize; j++) {
         // Cells
         testArr[i][j] = 0;
       }
     }
     return testArr;
+  };
+
+  const clear = () => {
+    let tempArr = emptyGrid();
+    setGrid(tempArr);
+    setGeneration(0);
   };
 
   // ============== Algorithm for conway's rules of life ============== //
@@ -145,6 +157,14 @@ function App() {
     return count;
   };
 
+  const handleOnChange = e => {
+    setSpeed(e.target.value);
+  };
+
+  const handleGridSize = e => {
+    setGridSize(e.target.value);
+  };
+
   return (
     <div className="App">
       <div className="App-header">
@@ -152,6 +172,9 @@ function App() {
         <div>
           <button onClick={playButton}>Start</button>
           <button onClick={pauseButton}>Pause</button>
+          <button onClick={clear}>Clear</button>
+          <input type="number" value={speed} onChange={handleOnChange} />
+          <input type="number" value={gridSize} onChange={handleGridSize} />
         </div>
         <h2>Generations: {generation}</h2>
       </div>
