@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 import DisplayGrid from "./components/Grid/Grid";
+
+let running = false;
 
 function App() {
   // ============== Hooks ============== //
   const [grid, setGrid] = useState([]);
   const [changeState, setChangeState] = useState(false); // forces change state, grid is too nested to trigger a change
+  const [generation, setGenerations] = useState(-1);
+  // const [running, setRunning] = useState(false);
+
+  const refGeneration = useRef();
+  refGeneration.current = generation;
 
   // ============== Create empty grid ============== //
   useEffect(() => {
@@ -15,7 +22,7 @@ function App() {
   }, []);
 
   // ============== Click handler to change individual cells ============== //
-  function changeCell(e) {
+  const changeCell = e => {
     e.preventDefault();
     const row = e.target.dataset.row;
     const col = e.target.dataset.col;
@@ -25,9 +32,9 @@ function App() {
     setGrid(newGrid);
     // console.log(grid)
     changeState === false ? setChangeState(true) : setChangeState(false);
-  }
+  };
 
-  function emptyGrid(rows, col) {
+  const emptyGrid = (rows, col) => {
     let testArr = [];
     // Rows
     for (let i = 0; i < 15; i++) {
@@ -39,38 +46,59 @@ function App() {
       }
     }
     return testArr;
-  }
+  };
 
   // ============== Algorithm for conway's rules of life ============== //
   // ===== Start Game ===== //
   let timerId;
-  function runGame() {
-    // disable button after pressed once
-    timerId = window.setInterval(rulesOfLife, 500);
-  }
+
+  const runGame = e => {
+    running = true;
+    timerId = requestAnimationFrame(rulesOfLife);
+  };
+
   // ===== Stop Game ===== //
-  function stopGameOfLife(e) {
-    e.preventDefault();
-    window.clearInterval(timerId);
-  }
+  const stopGameOfLife = () => {
+    running = false;
+    cancelAnimationFrame(timerId);
+    console.log("Stopped");
+  };
+
+  const checkGeneration = () => {
+    setGenerations(refGeneration.current + 1);
+  };
+
+  useEffect(() => {
+    checkGeneration();
+  }, [refGeneration]);
 
   // ===== Algorithm for game ===== //
-  function rulesOfLife() {
+  const rulesOfLife = () => {
     // rule1: any live cell with fewer than two live neighbors dies, as if by underpopulation.
     // rule2: any live cell with two or three live neighbors lives on to the next generation.
     // rule3: any live cell with more than three live neighbors dies, as if by overpopulation
     // rule4: any dead cell with three live neighbors becomes a live cell, as if by reproduction.
-    console.log("Loop");
-    for (let row = 0; row < grid.length; row++) {
-      // column loop
-      for (let col = 0; col < grid[row].length; col++) {
-        let count = numNeighbors(row, col);
-        console.log("Row: ", row, "Col: ", col);
-      }
-    }
-  }
+    if (running) {
+      console.log("Running");
+      checkGeneration();
 
-  function numNeighbors(row, col) {
+      for (let row = 0; row < grid.length; row++) {
+        // setGenerations(generation + 1);
+        // column loop
+        for (let col = 0; col < grid[row].length; col++) {
+          let count = numNeighbors(row, col);
+          console.log("Row: ", row, "Col: ", col);
+        }
+      }
+      requestAnimationFrame(rulesOfLife);
+    } else {
+      console.log("Not Running");
+    }
+    if (running == false) {
+    }
+  };
+
+  const numNeighbors = (row, col) => {
     let count = 0;
     // top left
     if (row !== 0 && col !== 0) {
@@ -105,7 +133,7 @@ function App() {
       count += grid[row + 1][col + 1];
     }
     return count;
-  }
+  };
 
   return (
     <div className="App">
@@ -113,8 +141,9 @@ function App() {
         <DisplayGrid grid={grid} setGrid={setGrid} changeCell={changeCell} />
         <div>
           <button onClick={runGame}>Start!</button>
-          <button onClick={e => stopGameOfLife(e)}>STOP!!!</button>
+          <button onClick={stopGameOfLife}>STOP!!!</button>
         </div>
+        <h2>Generations: {generation}</h2>
         {/* TODO: Make reset button */}
       </div>
     </div>
