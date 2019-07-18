@@ -9,7 +9,7 @@ let running = false;
 function App() {
   // ============== Hooks ============== //
   const [grid, setGrid] = useState([]);
-  const [gridSize, setGridSize] = useState(15);
+  const [gridSize, setGridSize] = useState(20);
   const [changeState, setChangeState] = useState(false);
   const [generation, setGeneration] = useState(-1);
   const [interval, setInterval] = useState(null);
@@ -59,10 +59,60 @@ function App() {
     return testArr;
   };
 
+  const presetLine = () => {
+    let tempArr = emptyGrid();
+    for (let i = 0; i < tempArr.length; i++) {
+      tempArr[i][parseInt(tempArr.length / 2)] = 1;
+    }
+    setGrid(tempArr);
+  };
+
+  const presetCross = () => {
+    let tempArr = emptyGrid();
+    for (let i = 0; i < tempArr.length; i++) {
+      for (let j = 0; j < tempArr.length; j++) {
+        tempArr[i][parseInt(tempArr.length / 2)] = 1;
+        tempArr[parseInt(tempArr.length / 2)][i] = 1;
+      }
+    }
+    setGrid(tempArr);
+  };
+
+  const presetFlower = () => {
+    let tempArr = emptyGrid();
+    const center = parseInt(tempArr.length / 2);
+
+    tempArr[center][center] = 1;
+    // change above
+    tempArr[center - 2][center] = 1;
+    tempArr[center - 2][center - 1] = 1;
+    tempArr[center - 2][center + 1] = 1;
+    // change below
+    tempArr[center + 2][center] = 1;
+    tempArr[center + 2][center - 1] = 1;
+    tempArr[center + 2][center + 1] = 1;
+    setGrid(tempArr);
+  };
+
+  const presetPlus = () => {
+    let tempArr = emptyGrid();
+    const center = parseInt(tempArr.length / 2);
+
+    tempArr[center][center] = 1;
+    // change above
+    tempArr[center - 1][center] = 1;
+    tempArr[center][center + 1] = 1;
+    tempArr[center][center - 1] = 1;
+    // change below
+    tempArr[center + 1][center] = 1;
+    setGrid(tempArr);
+  };
+
   const clear = () => {
     let tempArr = emptyGrid();
     setGrid(tempArr);
     setGeneration(0);
+    setInterval(null);
   };
 
   // ============== Algorithm for conway's rules of life ============== //
@@ -122,36 +172,41 @@ function App() {
 
   const numNeighbors = (row, col) => {
     let count = 0;
-    // top left
     if (row !== 0 && col !== 0) {
+      // check top left
       count += grid[row - 1][col - 1];
     }
-    // top
+
     if (row !== 0) {
+      // check top
       count += grid[row - 1][col];
     }
-    // top right
-    if (row !== 0 && col !== grid.length) {
+
+    if (row !== 0 && col !== grid.length - 1) {
+      // check top right
       count += grid[row - 1][col + 1];
     }
-    // left
+
     if (col !== 0) {
+      // check left
       count += grid[row][col - 1];
     }
-    // right
-    if (col !== grid.length) {
+
+    if (col !== grid.length - 1) {
+      // check right
       count += grid[row][col + 1];
     }
-    // bottom left
+
     if (row !== grid.length - 1 && col !== 0) {
+      // check bottom left
       count += grid[row + 1][col - 1];
     }
-    // bottom
+    // check bottom
     if (row !== grid.length - 1) {
       count += grid[row + 1][col];
     }
-    // bottom right
-    if (row !== grid.length - 1 && col !== grid.length) {
+    // check bottom right
+    if (row !== grid.length - 1 && col !== grid.length - 1) {
       count += grid[row + 1][col + 1];
     }
     return count;
@@ -175,6 +230,12 @@ function App() {
           <button onClick={clear}>Clear</button>
           <input type="number" value={speed} onChange={handleOnChange} />
           <input type="number" value={gridSize} onChange={handleGridSize} />
+        </div>
+        <div>
+          <button onClick={presetLine}>Center Line</button>
+          <button onClick={presetFlower}>Flower</button>
+          <button onClick={presetCross}>Cross</button>
+          <button onClick={presetPlus}>Plus</button>
         </div>
         <h2>Generations: {generation}</h2>
       </div>
