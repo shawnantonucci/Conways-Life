@@ -8,8 +8,12 @@ let running = false;
 
 function App() {
   // ============== Hooks ============== //
+  const [small, setSmall] = useState(25);
+  const [medium, setMedium] = useState(45);
+  const [large, setLarge] = useState(55);
+
   const [grid, setGrid] = useState([]);
-  const [gridSize, setGridSize] = useState(30);
+  const [gridSize, setGridSize] = useState(small);
   const [changeState, setChangeState] = useState(false);
   const [generation, setGeneration] = useState(-1);
   const [interval, setInterval] = useState(null);
@@ -66,20 +70,66 @@ function App() {
       tempArr[i][parseInt(tempArr.length / 2)] = 1;
     }
     tempArr[center][center - 1] = 1;
+    tempArr[center][center - 2] = 1;
+    tempArr[center][center - 3] = 1;
     tempArr[center][center + 1] = 1;
+    tempArr[center][center + 2] = 1;
+    tempArr[center][center + 3] = 1;
 
-    tempArr[center][center - 1] = 1;
-    tempArr[center][center + 1] = 1;
+    tempArr[center - 1][center - 1] = 1;
+    tempArr[center - 1][center - 2] = 1;
+    tempArr[center - 2][center - 1] = 1;
+    tempArr[center - 2][center - 2] = 1;
+
+    tempArr[center - 1][center + 1] = 1;
+    tempArr[center - 1][center + 2] = 1;
+    tempArr[center - 2][center + 1] = 1;
+    tempArr[center - 2][center + 2] = 1;
+
+    tempArr[center + 1][center - 1] = 1;
+    tempArr[center + 1][center - 2] = 1;
+    tempArr[center + 2][center - 1] = 1;
+    tempArr[center + 2][center - 2] = 1;
+
+    tempArr[center + 1][center + 1] = 1;
+    tempArr[center + 1][center + 2] = 1;
+    tempArr[center + 2][center + 1] = 1;
+    tempArr[center + 2][center + 2] = 1;
 
     setGrid(tempArr);
   };
 
   const presetCross = () => {
     let tempArr = emptyGrid();
+    const center = parseInt(tempArr.length / 2);
+    tempArr[center][center] = 1;
+
     for (let i = 0; i < tempArr.length; i++) {
       tempArr[i][parseInt(tempArr.length / 2)] = 1;
       tempArr[parseInt(tempArr.length / 2)][i] = 1;
     }
+    // top left
+    tempArr[center - 1][center - 1] = 1;
+    tempArr[center - 2][center - 1] = 1;
+    tempArr[center - 1][center - 2] = 1;
+    tempArr[center - 2][center - 2] = 1;
+
+    // top right
+    tempArr[center - 1][center + 1] = 1;
+    tempArr[center - 2][center + 1] = 1;
+    tempArr[center - 1][center + 2] = 1;
+    tempArr[center - 2][center + 2] = 1;
+    // bottom right
+    tempArr[center + 1][center + 1] = 1;
+    tempArr[center + 2][center + 1] = 1;
+    tempArr[center + 1][center + 2] = 1;
+    tempArr[center + 2][center + 2] = 1;
+    // bottom left
+    tempArr[center + 1][center - 1] = 1;
+    tempArr[center + 2][center - 1] = 1;
+    tempArr[center + 1][center - 2] = 1;
+    tempArr[center + 2][center - 2] = 1;
+
     setGrid(tempArr);
   };
 
@@ -234,13 +284,17 @@ function App() {
           <button onClick={pauseButton}>Pause</button>
           <button onClick={clear}>Clear</button>
           <input type="number" value={speed} onChange={handleOnChange} />
-          <input type="number" value={gridSize} onChange={handleGridSize} />
         </div>
         <div>
           <button onClick={presetLine}>Center Line</button>
           <button onClick={presetFlower}>Flower</button>
           <button onClick={presetCross}>Cross</button>
           <button onClick={presetPlus}>Plus</button>
+        </div>
+        <div>
+          <button onClick={() => setGridSize(small)}>Small</button>
+          <button onClick={() => setGridSize(medium)}>Medium</button>
+          <button onClick={() => setGridSize(large)}>Large</button>
         </div>
         <h2>Generations: {generation}</h2>
       </div>
