@@ -9,7 +9,7 @@ let running = false;
 function App() {
   // ============== Hooks ============== //
   const [grid, setGrid] = useState([]);
-  const [gridSize, setGridSize] = useState(20);
+  const [gridSize, setGridSize] = useState(30);
   const [changeState, setChangeState] = useState(false);
   const [generation, setGeneration] = useState(-1);
   const [interval, setInterval] = useState(null);
@@ -61,19 +61,24 @@ function App() {
 
   const presetLine = () => {
     let tempArr = emptyGrid();
+    const center = parseInt(tempArr.length / 2);
     for (let i = 0; i < tempArr.length; i++) {
       tempArr[i][parseInt(tempArr.length / 2)] = 1;
     }
+    tempArr[center][center - 1] = 1;
+    tempArr[center][center + 1] = 1;
+
+    tempArr[center][center - 1] = 1;
+    tempArr[center][center + 1] = 1;
+
     setGrid(tempArr);
   };
 
   const presetCross = () => {
     let tempArr = emptyGrid();
     for (let i = 0; i < tempArr.length; i++) {
-      for (let j = 0; j < tempArr.length; j++) {
-        tempArr[i][parseInt(tempArr.length / 2)] = 1;
-        tempArr[parseInt(tempArr.length / 2)][i] = 1;
-      }
+      tempArr[i][parseInt(tempArr.length / 2)] = 1;
+      tempArr[parseInt(tempArr.length / 2)][i] = 1;
     }
     setGrid(tempArr);
   };
