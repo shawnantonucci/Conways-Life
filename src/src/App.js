@@ -3,21 +3,27 @@ import "./App.css";
 import { useInterval } from "./hooks/useInterval";
 
 import DisplayGrid from "./components/Grid/Grid";
+import Rules from "./components/Rules";
+import Buttongrid from "./components/ButtonGrid";
 
 let running = false;
 
 function App() {
   // ============== Hooks ============== //
   const [small, setSmall] = useState(25);
-  const [medium, setMedium] = useState(45);
+  const [medium, setMedium] = useState(35);
   const [large, setLarge] = useState(55);
+
+  const [slow, setSlow] = useState(150);
+  const [normal, setNormal] = useState(100);
+  const [fast, setFast] = useState(50);
 
   const [grid, setGrid] = useState([]);
   const [gridSize, setGridSize] = useState(small);
   const [changeState, setChangeState] = useState(false);
   const [generation, setGeneration] = useState(-1);
   const [interval, setInterval] = useState(null);
-  const [speed, setSpeed] = useState(100);
+  const [speed, setSpeed] = useState(normal);
 
   const refGeneration = useRef();
   refGeneration.current = generation;
@@ -278,25 +284,38 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <DisplayGrid grid={grid} setGrid={setGrid} changeCell={changeCell} />
+        <h1>Shawn Antonucci's</h1>
+        <h1>Game Of Life</h1>
         <div>
-          <button onClick={playButton}>Start</button>
-          <button onClick={pauseButton}>Pause</button>
-          <button onClick={clear}>Clear</button>
-          <input type="number" value={speed} onChange={handleOnChange} />
+          <div style={{ display: "flex" }}>
+            <DisplayGrid
+              grid={grid}
+              setGrid={setGrid}
+              changeCell={changeCell}
+            />
+            <Rules />
+          </div>
+          <div style={{ marginTop: "-20%", marginLeft: "40%" }}>
+            <Buttongrid
+              presetLine={presetLine}
+              presetFlower={presetFlower}
+              presetCross={presetCross}
+              presetPlus={presetPlus}
+              playButton={playButton}
+              pauseButton={pauseButton}
+              clear={clear}
+              setSpeed={setSpeed}
+              slow={slow}
+              normal={normal}
+              fast={fast}
+              setGridSize={setGridSize}
+              small={small}
+              medium={medium}
+              large={large}
+            />
+            <h2>Generations: {generation}</h2>
+          </div>
         </div>
-        <div>
-          <button onClick={presetLine}>Center Line</button>
-          <button onClick={presetFlower}>Flower</button>
-          <button onClick={presetCross}>Cross</button>
-          <button onClick={presetPlus}>Plus</button>
-        </div>
-        <div>
-          <button onClick={() => setGridSize(small)}>Small</button>
-          <button onClick={() => setGridSize(medium)}>Medium</button>
-          <button onClick={() => setGridSize(large)}>Large</button>
-        </div>
-        <h2>Generations: {generation}</h2>
       </div>
     </div>
   );
