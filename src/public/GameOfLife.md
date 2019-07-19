@@ -1,7 +1,6 @@
-                                                        Shawn Antonucci’s
+                                                      Shawn Antonucci’s
                                                         Game Of Life
                                                     based off John Conways
-
 
 Conway's Game of life is a cellular automaton game. Game of life is a zero player game where the user picks a predetermined preset
 or creates their own configuration of cells that either die off, reproduce and die off, or overpopulate. The game requires that you
@@ -29,3 +28,10 @@ current value and the next value its receiving and will update correctly. Howeve
 and changes state rendering one time. To get my state to render on each change I had to do some research and found an article by Dan Abromov
 explaining how to re render on each change with hooks. Using a custom hook we have a setInterval function where we pass our game logic function
 in as a callback along with a game speed we then can use two useEffects to get our updated state at every state change.
+
+For styling I used semantic UI for the buttons I am using to play, pause or clear out the automaton. I have a group of buttons to choose your
+default speed and a group of buttons to change the initial grid size. then last but not least a group of buttons with preset cells that do
+some pretty cool animations with the automaton grid.
+
+When building out the presets I built them so that they would scale no matter the grid size by looping over the grid and finding the middle.
+after getting the middle I used bracket notation to pick on an x, y axis of what additional cells I wanted and where I wanted them.
